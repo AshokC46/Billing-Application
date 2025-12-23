@@ -14,28 +14,49 @@ export const calculateOffers = (cartItems: CartItem[]) => {
     0
   );
 
-  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-  if (totalQuantity >= 2) {
+ 
+  const cheese = cartItems.find((item) => item.name === "Cheese");
+  if (cheese && cheese.quantity >= 2) {
+    const freeCheese = Math.floor(cheese.quantity / 2);
+    const cheeseSavings = freeCheese * cheese.price;
     offers.push({
-      description: "Buy 2 products offer",
-      savings: 100,
+      description: "Cheese Buy 1 Get 1 Free",
+      savings: cheeseSavings,
     });
-    totalSavings += 100;
+    totalSavings += cheeseSavings;
   }
 
-  if (subtotal >= 500) {
-    const discount = Math.floor(subtotal * 0.1);
-    offers.push({
-      description: "10% off on orders above ₹500",
-      savings: discount,
-    });
-    totalSavings += discount;
+  
+  const bread = cartItems.find((item) => item.name === "Bread");
+  const soup = cartItems.find((item) => item.name === "Soup"); 
+  if (soup && bread) {
+    const eligibleBread = Math.min(soup.quantity, bread.quantity);
+    const breadSavings = Math.floor(eligibleBread * bread.price * 0.5);
+    if (breadSavings > 0) {
+      offers.push({
+        description: "Soup Offer: Bread at Half Price",
+        savings: breadSavings,
+      });
+      totalSavings += breadSavings;
+    }
   }
+
+  
+  const butter = cartItems.find((item) => item.name === "Butter");
+  if (butter && butter.quantity > 0) {
+    const butterSavings = Math.floor(butter.price / 3) * butter.quantity;
+    offers.push({
+      description: "Butter 1/3 off",
+      savings: butterSavings,
+    });
+    totalSavings += butterSavings;
+  }
+
+  const finalTotal = subtotal - totalSavings;
 
   return {
     offers,
     totalSavings,
-    finalTotal: subtotal - totalSavings,
+    finalTotal,
   };
 };
