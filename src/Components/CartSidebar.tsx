@@ -11,6 +11,8 @@ const CartSidebar = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const dispatch = useDispatch<AppDispatch>();
 
+  const formatPrice = (price: number) => `£${price.toFixed(2)}`;
+
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -33,62 +35,73 @@ const CartSidebar = () => {
         {cartItems.length === 0 && <p>Your cart is empty</p>}
 
         {cartItems.map((item) => (
-          <div
-            key={item.id}
-            className="d-flex justify-content-between align-items-center mb-3"
-          >
-            <div>
-              <strong>{item.name}</strong>
-              <p className="mb-0">₹{item.price}</p>
-            </div>
+          <div key={item.id} className="mb-3">
+            <div className="d-flex align-items-center justify-content-between">
+              <div style={{ flex: 1 }}>
+                <strong>{item.name}</strong>
+              </div>
 
-            <div className="d-flex align-items-center gap-2">
-              <button
-                className="btn btn-sm btn-outline-secondary"
-                onClick={() => dispatch(decreaseQuantity(item.id))}
+              <div
+                style={{
+                  width: "80px",
+                  textAlign: "center",
+                  fontWeight: 500,
+                }}
               >
-                -
-              </button>
+                £<strong>{item.price.toFixed(2)}</strong>
+              </div>
 
-              <span>{item.quantity}</span>
+              <div className="d-flex align-items-center gap-2">
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => dispatch(decreaseQuantity(item.id))}
+                >
+                  −
+                </button>
 
-              <button
-                className="btn btn-sm btn-outline-secondary"
-                onClick={() => dispatch(addToCart(item))}
-              >
-                +
-              </button>
+                <span>{item.quantity}</span>
 
-              <button
-                className="btn btn-sm btn-danger"
-                onClick={() => dispatch(removeFromCart(item.id))}
-              >
-                Remove
-              </button>
+                <button
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => dispatch(addToCart(item))}
+                >
+                  +
+                </button>
+
+                <button
+                  className="btn btn-sm btn-danger"
+                  onClick={() => dispatch(removeFromCart(item.id))}
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           </div>
         ))}
-
         <hr />
-
         <div className="d-flex justify-content-between">
           <h6>Subtotal:</h6>
-          <h6>₹{subtotal}</h6>
+          <h6>{formatPrice(subtotal)}</h6>
         </div>
 
         {offers.map((offer, index) => (
-          <p key={index} className="text-success">
-            {offer.description}: ₹{offer.savings}
-          </p>
+          <div
+            key={index}
+            className="d-flex justify-content-between text-success"
+          >
+            <span>{offer.description}</span>
+            <span>{formatPrice(offer.savings)}</span>
+          </div>
         ))}
-        <div className="d-flex justify-content-between">
+
+        <div className="d-flex justify-content-between mt-2">
           <h6>Total Savings:</h6>
-          <h6>₹{totalSavings}</h6>
+          <h6>{formatPrice(totalSavings)}</h6>
         </div>
 
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between fw-bold">
           <h6>Final Total:</h6>
-          <h6>₹{finalTotal}</h6>
+          <h6>{formatPrice(finalTotal)}</h6>
         </div>
 
         <button className="btn btn-primary w-100 mt-3">Checkout</button>

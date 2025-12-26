@@ -30,19 +30,22 @@ const ProductList = () => {
           key={product.id}
           className="d-flex justify-content-between align-items-center border-bottom py-2"
         >
-          <div>
-            <strong>{product.name}</strong>
-            <div className="text-muted">₹{product.price}</div>
-          </div>
+          <strong>{product.name}</strong>
 
-          <button
-            className="btn btn-primary btn-sm"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#cartSidebar"
-            onClick={() => dispatch(addToCart(product))}
-          >
-            Add to Bag
-          </button>
+          <div className="d-flex align-items-center">
+            <span className="me-3 text-muted">
+              £<strong>{product.price.toFixed(2)}</strong>
+            </span>
+
+            <button
+              className="btn btn-primary btn-sm"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#cartSidebar"
+              onClick={() => dispatch(addToCart(product))}
+            >
+              Add to Bag
+            </button>
+          </div>
         </div>
       ))}
     </div>
